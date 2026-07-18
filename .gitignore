@@ -1,0 +1,35 @@
+# Build output
+build/
+out/
+cmake-build-*/
+
+# ESP-IDF
+managed_components/
+dependencies.lock
+sdkconfig
+sdkconfig.old
+sdkconfig.defaults
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs
+*.log
