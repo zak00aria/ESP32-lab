@@ -1,6 +1,9 @@
 #include <stdint.h>
+
 #include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "driver/gpio.h"
+
 #include "multiplexed_leds_matrix.h"
 #include "game_of_life.h"
 
@@ -23,6 +26,9 @@ uint8_t current_generation[LED_MATRIX_W * LED_MATRIX_H] = {
     1, 0, 1, 0, 1,
     0, 1, 0, 1, 0};
 
+static void refresh_LEDs_matrix_task(void *arg);
+static void advance_game_of_life_task(void *arg);
+
 void app_main(void)
 {
     int8_t delay_counter = 0;
@@ -34,19 +40,26 @@ void app_main(void)
         LED_MATRIX_H,
         rows_control_pins_list,
         cols_control_pins_list);
+    
+    xTaskCreate(refresh_LEDs_matrix_task, "refresh_LEDs_matrix_task", 1024, NULL, 1, NULL);
+    xTaskCreate(advance_game_of_life_task, "advance_game_of_life_task", 1024, NULL, 2, NULL);
+}
 
+static void refresh_LEDs_matrix_task(void *arg)
+{
     while (1)
     {
         // update LEDs matrix
         multiplexed_LEDs_matrix_refresh(&LEDs_matrix);
+    }
+}
 
-        // advance game of life after updating LEDs matrix 20 times
-        delay_counter++;
-        if (delay_counter < 20)
-            continue;
-        delay_counter = 0;
-
+static void advance_game_of_life_task(void *arg)
+{
+    while (1)
+    {
         // advance game of life
         advance_game_of_life(&LEDs_matrix);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
