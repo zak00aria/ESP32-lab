@@ -59,6 +59,8 @@ void multiplexed_LEDs_matrix_set(
     uint8_t y,
     Multiplexed_LEDs_matrix_level_t level)
 {
+    if (x >= LEDs_matrix->width || y >= LEDs_matrix->height)
+        return;
     // get LED index
     uint16_t LED_index = 0;
     for (uint8_t i = 0; i < y; i++)
@@ -75,6 +77,8 @@ Multiplexed_LEDs_matrix_level_t multiplexed_LEDs_matrix_get(
     uint8_t x,
     uint8_t y)
 {
+    if (x >= LEDs_matrix->width || y >= LEDs_matrix->height)
+        return MLM_LOW;
     // get LED index
     uint16_t LED_index = 0;
     for (uint8_t i = 0; i < y; i++)
@@ -86,7 +90,7 @@ Multiplexed_LEDs_matrix_level_t multiplexed_LEDs_matrix_get(
     return LEDs_matrix->LEDs_state[LED_index];
 }
 
-void multiplexed_LEDs_matrix_reset(Multiplexed_LEDs_matrix_t *LEDs_matrix)
+void multiplexed_LEDs_matrix_clear(Multiplexed_LEDs_matrix_t *LEDs_matrix)
 {
     uint16_t LED_index = 0;
     for (uint8_t y = 0; y < LEDs_matrix->height; y++)
